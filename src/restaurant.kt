@@ -52,6 +52,7 @@ class Order(value: Menu, private val count: Int) // атомарность за�
     fun getPrice(): Double {return price}
     fun getVAT(): Double {return vat}
     fun getName(): String {return name}
+    fun getCount(): Int {return count}
 
 
     override fun toString(): String
@@ -81,17 +82,21 @@ class Check(private val waiter:String, private val cook:String, private val orde
 {
     private val time: String = SimpleDateFormat("hh:mm:ss").format(Date())
     private var totalPrice:Double = Int.MAX_VALUE.toDouble()
+    private var totalTime:Int = Int.MAX_VALUE
 
     fun getCook(): String {return cook}
     fun getWaiter(): String {return waiter}
+    fun getTotalTime(): Int {return totalTime}
 
 
     init
     {
         totalPrice = 0.0
+        totalTime = 0
         for(i in orders)
         {
             totalPrice += i.getPrice()
+            totalTime += i.getCount()
         }
     }
 
@@ -128,5 +133,7 @@ class Check(private val waiter:String, private val cook:String, private val orde
         }
         sw.write("Общаяя стоимость: $totalPrice\n")
         sw.close()
+        println(File(myDir,"$Checks/$number.txt").readText())
+        println("\n\n\n\n")
     }
 }

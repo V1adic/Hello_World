@@ -218,7 +218,12 @@ fun cancellation(shopping: MutableList<Order>)
         } catch (_: Exception) {
             println("incorrect input".uppercase())
         }
+
         println("Чтобы закончить удаление введите /Close")
+        if(shopping.isEmpty())
+        {
+            return
+        }
     }
 }
 
@@ -317,7 +322,7 @@ fun main(): Unit = runBlocking {
             val checkRead = check!!
             val sortedNeed = needSortValues
             println("Не переживайте, ваш заказ выполняется и мы вам скажем когда он будет готов)")
-            delay(40000)
+            delay((checkRead.getTotalTime() * 100).toLong())
             checkRead.toFile(sortedNeed)
             println("Прошлый заказ был готов, просьба заберите его как можно скорее")
             Restaurant.getCooks().add(checkRead.getCook())
