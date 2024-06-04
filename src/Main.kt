@@ -191,6 +191,37 @@ fun checkStreet(street:String): Boolean // Проверка существава
     return (street.isNotEmpty())
 }
 
+fun cancellation(shopping: MutableList<Order>)
+{
+    while (true) {
+
+        println("Выберите позицию продукта:")
+        var count = 1
+        for (i in shopping) {
+            println("${count++}: $i")
+        }
+        val quickRead = readln()
+
+        if(shopping.isEmpty() || quickRead == "/Close")
+        {
+            return
+        }
+
+        try {
+            val dataValue = quickRead.toUInt()
+            if (dataValue >= 1u && dataValue <= shopping.count().toUInt()) {
+                shopping.removeAt((dataValue - 1u).toInt())
+            } else {
+                throw Exception("Хе-Хе-Хе")
+            }
+
+        } catch (_: Exception) {
+            println("incorrect input".uppercase())
+        }
+        println("Чтобы закончить удаление введите /Close")
+    }
+}
+
 fun workersClient()
 {
     val shopping: MutableList<Order> = ArrayList()
@@ -213,32 +244,40 @@ fun workersClient()
             if (shopping.isNotEmpty()) {
                 break
             }
-        }
-
-        try {
-            var dataValue = quickRead.toUInt()
-            if (dataValue >= 1u && dataValue <= mainMenuRestaurant.count().toUInt()) {
-                tempMenu = mainMenuRestaurant[(dataValue - 1u).toInt()]
-            } else {
-                throw Exception("Хе-Хе-Хе")
+        } else if(quickRead == "/Cancel")
+        {
+            if (shopping.isNotEmpty()) {
+                cancellation(shopping)
             }
-            while (true) {
-                print("Сколько единиц продукции хотите купить? -> ")
-                try {
-                    quickRead = readln()
-                    dataValue = quickRead.toUInt()
-                    break
-                } catch (_: Exception) {
-                    println("incorrect input".uppercase())
+        }
+        else {
+
+            try {
+                var dataValue = quickRead.toUInt()
+                if (dataValue >= 1u && dataValue <= mainMenuRestaurant.count().toUInt()) {
+                    tempMenu = mainMenuRestaurant[(dataValue - 1u).toInt()]
+                } else {
+                    throw Exception("Хе-Хе-Хе")
                 }
+                while (true) {
+                    print("Сколько единиц продукции хотите купить? -> ")
+                    try {
+                        quickRead = readln()
+                        dataValue = quickRead.toUInt()
+                        break
+                    } catch (_: Exception) {
+                        println("incorrect input".uppercase())
+                    }
+                }
+
+                shopping.add(Order(tempMenu, dataValue.toInt()))
+
+            } catch (_: Exception) {
+                println("incorrect input".uppercase())
             }
-
-            shopping.add(Order(tempMenu, dataValue.toInt()))
-
-            println("Введите /Close, чтобы завершить выбор товаров")
-        } catch (_: Exception) {
-            println("incorrect input".uppercase())
         }
+        println("Введите /Close, чтобы завершить выбор товаров")
+        println("Введите /Cancel, чтобы удалить некоторые позиции")
     }
 
     while (true) {
@@ -285,5 +324,4 @@ fun main(): Unit = runBlocking {
             Restaurant.getWaiters().add(checkRead.getWaiter())
         }
     }
-
 }
